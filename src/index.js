@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.css'; //This is installed by this cmd: npm install bootstrap --save 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

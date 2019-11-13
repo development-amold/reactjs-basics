@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import './Employees.css';
+import { Button, Table, Input} from 'reactstrap';
+// import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 export class Employees extends Component{
   constructor(props){
@@ -39,16 +41,23 @@ export class Employees extends Component{
     let updateDisabled = (this.state[`id_${ind}_valid`] === false || this.state[`name_${ind}_valid`] === false || 
       this.state[`zip_${ind}_valid`] === false) ? 'disabled' : '';
     return <tr key={ind}>
-      <td><input type="text" style={{border: (this.state[`id_${ind}_valid`] === false)? '4px solid red':'none' }} name={`id_${ind}`} defaultValue={emp.id} onChange={(event) => this.updateInput(event,ind)} /></td>
-      <td><input type="text" name={`name_${ind}`} style={{border: (this.state[`name_${ind}_valid`] === false)? '4px solid red':'none' }} defaultValue={emp.name} onChange={(event) => this.updateInput(event,ind)} /></td>
-      <td><input type="text" name={`zipcode_${ind}`} style={{border: (this.state[`zip_${ind}_valid`] === false)? '4px solid red':'none' }} defaultValue={emp.zipcode} onChange={(event) => this.updateInput(event,ind)} /></td>
+      <td><Input type="text" 
+        style={{border: (this.state[`id_${ind}_valid`] === false)? '4px solid red':'1px solid #ced4da' }}
+        name={`id_${ind}`} defaultValue={emp.id} onChange={(event) => this.updateInput(event,ind)} /></td>
+      <td><Input type="text" name={`name_${ind}`} 
+        style={{border: (this.state[`name_${ind}_valid`] === false)? '4px solid red':'1px solid #ced4da' }} 
+        defaultValue={emp.name} onChange={(event) => this.updateInput(event,ind)} /></td>
+      <td><Input type="text" name={`zipcode_${ind}`} 
+        style={{border: (this.state[`zip_${ind}_valid`] === false)? '4px solid red':'1px solid #ced4da' }} 
+        defaultValue={emp.zipcode} onChange={(event) => this.updateInput(event,ind)} /></td>
       <td>
-        <button type="button" disabled={updateDisabled} onClick={() => 
+        <Button color="primary" type="button" disabled={updateDisabled} onClick={() => 
           this.props.updateEmp(ind,'update',{
             id: this.state[`id_${ind}`], name: this.state[`name_${ind}`], zipcode: this.state[`zipcode_${ind}`]
           } )}>Update
-        </button>|
-        <button type="button" onClick={() => this.props.updateEmp(ind,'cancel',this.state)}>Cancel</button>
+        </Button>|
+        <Button color="primary" type="button" onClick={() => this.props.updateEmp(ind,'cancel',this.state)}>
+          Cancel</Button>
       </td>
     </tr>
   }
@@ -69,15 +78,17 @@ export class Employees extends Component{
             <td>{emp.id}</td>
             <td>{emp.name}</td>
             <td>{emp.zipcode}</td>
-            <td><button type="button" onClick={() => this.props.EditEmp(ind)}>Edit</button>|
-            <button type="button" onClick={() => this.props.deleteEmp(ind)}>Delete</button></td>
+            <td>
+              <Button color="primary" type="button" onClick={() => this.props.EditEmp(ind)}>Edit</Button>|
+              <Button color="primary" type="button" onClick={() => this.props.deleteEmp(ind)}>Delete</Button>
+            </td>
           </tr>
         )
       }
     });
     return(
       <div>
-        <table>
+        <Table bordered responsive>
           <thead>
             <tr>
               <th>ID</th>
@@ -89,7 +100,7 @@ export class Employees extends Component{
           <tbody>
             {emp_td}
           </tbody>
-        </table>      
+        </Table>      
       </div>
     )
   }

@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import {Employees} from './Employees';
 import faker from 'faker';
+import { Button } from 'reactstrap';
 
 //README: It shows flow of child to parent component with component iterations with CRUD array operations
 
@@ -74,10 +75,9 @@ export class CompIteratorCRUD extends Component{
     return(
       <div>
         <p>CRUD using Array</p>
-        <hr></hr>
         <Employees employees_arr={this.state.employees} deleteEmp={this.deleteEmpParent} 
           EditEmp={this.EditEmpParent} updateEmp={this.updateEmp} />
-        <button type="button" onClick={() => this.addEmp()}>Add New Emp</button>
+        <Button color="success" type="button" onClick={() => this.addEmp()}>Add New Emp</Button>
       </div>
     )
   }
