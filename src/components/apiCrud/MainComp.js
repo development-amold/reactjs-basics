@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import fireBase from './../../firebase';
 import {Listusers} from './Listusers';
-import {Row, Col} from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
 import { ViewUser} from './ViewUser';
 import EditUser from './EditUser';
 
@@ -13,10 +13,12 @@ export class MainComp extends Component{
     this.state = {
       users: null,
       user: null,
-      userEditable: false
+      userEditable: false,
+      newUser: false
     }
     this.showUser = this.showUser.bind(this);
     // this.editUser = this.editUser.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   
 
@@ -39,9 +41,46 @@ export class MainComp extends Component{
     }
   }
 
-  // editUser(){
+  handleSubmit(user_id, name, age, jobTitle){
+    const userRefDB = fireBase.database();
+    if (user_id){
+      userRefDB.ref(`users/${user_id}`).update({
+        age: age,
+        name: name,
+        // job: {
+        //   title: jobTitle
+        // }
+      }).then(() => {
+        console.log('Data is updated!');
+        this.setState({newUser: true, user: null})
+      }).catch((e) => {
+        console.log('Failed.', e);
+      });
+    }else{
+      const usersCollectionRef = fireBase.database().ref('users');
+      usersCollectionRef.push({
+        name: name,
+        age: age,
+        job: {
+          title: jobTitle
+        }        
+      }).then(() => {
+        console.log('Data is saved!');
+        this.setState({newUser: true, user: null})
+      }).catch((e) => {
+          console.log('Failed.', e);
+      });
+    }
+  }
 
-  // }
+  handleDestroy = (user_id) => {
+    const userRefDB = fireBase.database();
+    userRefDB.ref(`users/${user_id}`).remove();
+  }
+
+  addNew(){
+    this.setState({newUser: true, user: null})
+  }
 
   componentDidMount() {
     //List
@@ -52,54 +91,35 @@ export class MainComp extends Component{
         users: snapshot.val()
       });
     });
-
-    // Create
-    // usersCollectionRef.push({
-    //   name: 'Ricky',
-    //   job: {
-    //       title: 'Scientist'
-    //   },
-    //   age: 49,
-    //   gender: 'Male'
-    // }).then(() => {
-    //     console.log('Data is saved!');
-    // }).catch((e) => {
-    //     console.log('Failed.', e);
-    // });
-
-    // //Update
-    // const userRefDB = fireBase.database();
-    // userRefDB.ref('users/LtYZTwz-wvzh1VtkxvF').update({
-    //   age: 67,
-    //   name: 'Navvya',
-    //   gender: 'Female'
-    // }).then(() => {
-    //   console.log('Data is updated!');
-    // }).catch((e) => {
-    //   console.log('Failed.', e);
-    // });
-
-    // //delete
-    // userRefDB.ref('users/LtYZTwz-wvzh1VtkxvF').remove();
-
-
   }
 
   render(){
     var viewUser = null;
     var editUser = null;
     if(this.state.user && this.state.userEditable){
-      editUser = <Col><EditUser user={this.state.user} /></Col>
+      editUser = <Col><EditUser user={this.state.user} handleSubmit={this.handleSubmit} /></Col>
     }else if(this.state.user && !this.state.userEditable){
       viewUser = <Col><ViewUser user={this.state.user} /></Col>
     }
+    else if(this.state.newUser){
+      // console.log(this.state.user)
+      viewUser = <Col><EditUser user={this.state.user} handleSubmit={this.handleSubmit}/></Col>
+    }
     // console.log(this.state.user)
     return(
-      <Row>
-        <Col xs="6"><Listusers users={this.state.users} showUser={this.showUser} /></Col>
-        {viewUser}
-        {editUser}
-      </Row>
+      <div>
+        <Row>
+          <Col>
+          <Button color="success" onClick={() => this.addNew()}>Add New</Button>
+          </Col>
+        </Row>
+        <hr></hr>
+        <Row>
+          <Col xs="6"><Listusers users={this.state.users} showUser={this.showUser} handleDestroy={this.handleDestroy}/></Col>
+          {viewUser}
+          {editUser}
+        </Row>
+      </div>  
     )
   }
     

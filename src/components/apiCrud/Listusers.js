@@ -26,7 +26,7 @@ export class Listusers extends Component{
             <td>
               <Button color="primary" onClick={(event) => this.props.showUser(objKey, {editable: false})}>Show</Button>|
               <Button color="primary" onClick={(event) => this.props.showUser(objKey, {editable: true})}>Edit</Button>|
-              <Button color="primary">Destroy</Button>
+              <Button color="primary" onClick={() => this.props.handleDestroy(objKey)}>Destroy</Button>
             </td>
           </tr>
         )
