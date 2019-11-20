@@ -7,9 +7,11 @@ export default class EditUser extends Component{
     this.state = {
       name: '', 
       age: '',
-      gender: 'male',
-      jobTitle: null,
-      user_id: null
+      gender: '',
+      jobTitle: '',
+      user_id: null,
+      is_valid: true,
+      is_submit_disabled: true
     }
     this.handleChange = this.handleChange.bind(this);
   }
@@ -23,7 +25,8 @@ export default class EditUser extends Component{
         return{
           name: props.user.name,
           age: props.user.age,
-          jobTitle: props.user.jobTitle,
+          jobTitle: props.user.job.title,
+          gender: props.user.gender,
           user_id: props.user.id,
         }      
       }
@@ -48,7 +51,23 @@ export default class EditUser extends Component{
   }
 
   handleChange(event){
-    this.setState({[event.target.name]: event.target.value})
+    let fieldName = event.target.name;
+    let fieldValue = event.target.value;
+    let is_valid = true;
+    // console.log(fieldName+"----"+fieldValue)
+    if(fieldName == 'name' && typeof fieldValue != 'undefined' && !(/[a-zA-Z]+$/).test(fieldValue) )
+    {
+      alert("Only Letters are allowed");
+      is_valid = false;
+    }
+    else if (fieldName == 'age' && typeof fieldValue != 'undefined' && !(/[0-9]+$/).test(fieldValue) )
+    {
+      alert("Only Numbers are allowed");
+      is_valid = false;
+    }
+    if(is_valid) {
+      this.setState({[event.target.name]: event.target.value, is_submit_disabled: false})
+    }
   }
 
   handleSubmit(){
@@ -57,7 +76,7 @@ export default class EditUser extends Component{
       jobTitle: null,
       user_id: null
     })
-    this.props.handleSubmit(this.state.user_id, this.state.name, this.state.age, this.state.jobTitle)    
+    this.props.handleSubmit(this.state.user_id, this.state.name, this.state.age, this.state.jobTitle, this.state.gender)    
   }
 
   render(){
@@ -75,12 +94,37 @@ export default class EditUser extends Component{
             <Label for="age"><strong>Age</strong></Label>
             <Input type="text" name="age" value={this.state.age} onChange={(event) => this.handleChange(event)} />
           </FormGroup>
-          {/* <FormGroup>
-            <Label for="jobTitle">Job Title</Label>
-            <Input type="text" name="jobTitle" value={this.state.jobTitle} onChange={(event) => this.handleChange(event)} />
-          </FormGroup>           */}
           <FormGroup>
-            <Button color="primary" onClick={() => this.handleSubmit(this.state.user_id, this.state.name, this.state.age, this.state.jobTitle)}>
+            <Label for="jobTitle"><strong>Select Job</strong></Label>
+            <Input type="select" name="jobTitle" value={this.state.jobTitle} id="jobTitle" onChange={(event) => this.handleChange(event)}>
+              <option key="" value="">Select Job</option>
+              <option key="Scientist" value="scientist">Scientist</option>
+              <option key="Programmer" value="programmer">Programmer</option>
+              <option key="Doctor" value="doctor">Doctor</option>
+              <option key="Engineer" value="engineer">Engineer</option>
+            </Input>
+          </FormGroup>
+
+          <FormGroup tag="fieldset" row> 
+            <Col sm={10}>
+              <FormGroup check>
+                <Label check>
+                  <Input type="radio" name="gender" value="male" checked={this.state.gender == 'male' ? "checked" : ""} onChange={(event) => this.handleChange(event)} />
+                  Male
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input type="radio" name="gender" value="female" checked={this.state.gender == 'female' ? "checked" : ""} onChange={(event) => this.handleChange(event)} />
+                  Female
+                </Label>              
+              </FormGroup>
+            </Col>
+          </FormGroup>
+
+          <FormGroup>
+            <Button color="primary" 
+              onClick={() => this.handleSubmit(this.state.user_id, this.state.name, this.state.age, this.state.jobTitle)} disabled={this.state.is_submit_disabled}>
               Submit</Button>
           </FormGroup>
 

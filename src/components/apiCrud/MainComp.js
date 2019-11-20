@@ -41,35 +41,42 @@ export class MainComp extends Component{
     }
   }
 
-  handleSubmit(user_id, name, age, jobTitle){
-    const userRefDB = fireBase.database();
-    if (user_id){
-      userRefDB.ref(`users/${user_id}`).update({
-        age: age,
-        name: name,
-        // job: {
-        //   title: jobTitle
-        // }
-      }).then(() => {
-        console.log('Data is updated!');
-        this.setState({newUser: true, user: null})
-      }).catch((e) => {
-        console.log('Failed.', e);
-      });
+  handleSubmit(user_id, name, age, jobTitle, gender){
+    if(name == "" || age == ""){
+      alert("Name and Age mandatory")
     }else{
-      const usersCollectionRef = fireBase.database().ref('users');
-      usersCollectionRef.push({
-        name: name,
-        age: age,
-        job: {
-          title: jobTitle
-        }        
-      }).then(() => {
-        console.log('Data is saved!');
-        this.setState({newUser: true, user: null})
-      }).catch((e) => {
+      const userRefDB = fireBase.database();
+      if (user_id){
+        userRefDB.ref(`users/${user_id}`).update({
+          age: age,
+          name: name,
+          job: {
+            title: jobTitle
+          },
+          gender: gender
+        }).then(() => {
+          console.log('Data is updated!');
+          this.setState({newUser: true, user: null})
+        }).catch((e) => {
           console.log('Failed.', e);
-      });
+        });
+      }else{
+        const usersCollectionRef = fireBase.database().ref('users');
+        console.log(jobTitle)
+        usersCollectionRef.push({
+          name: name,
+          age: age,
+          job: {
+            title: jobTitle
+          },
+          gender: gender               
+        }).then(() => {
+          console.log('Data is saved!');
+          this.setState({newUser: true, user: null})
+        }).catch((e) => {
+            console.log('Failed.', e);
+        });
+      }      
     }
   }
 
