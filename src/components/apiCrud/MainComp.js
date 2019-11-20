@@ -62,7 +62,7 @@ export class MainComp extends Component{
         });
       }else{
         const usersCollectionRef = fireBase.database().ref('users');
-        console.log(jobTitle)
+        // console.log(jobTitle)
         usersCollectionRef.push({
           name: name,
           age: age,
